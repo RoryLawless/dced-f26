@@ -1641,7 +1641,8 @@ load <- function(new_data = FALSE) {
         # regression table
         tableOutput("reg_table"),
         # scatterplot with var 1 and chronic abs, fitted value lined is
-        plotOutput("reg_scatter", height = "400px"),
+        # plotly so you can hover over points and lines
+        plotly::plotlyOutput("reg_scatter", height = "400px"),
         # residual plot
         textOutput("assumptions_text"),
         plotOutput("reg_assumptions", height = "400px")
@@ -2141,58 +2142,23 @@ load <- function(new_data = FALSE) {
       digits = 3
     )
 
-    # scatterplot: points are tracts, lines are the model's fit at low / median / high var 2
-    output$reg_scatter <- renderPlot({
-      d <- reg_data()
-      m <- reg_model()
-      lvls <- c("Low (25th percentile)", "Median", "High (75th percentile)")
-      x2_vals <- unname(quantile(d$x2, c(0.25, 0.5, 0.75)))
-      lines_df <- expand_grid(
-        x1 = seq(min(d$x1), max(d$x1), length.out = 50),
-        level = lvls
-      ) |>
-        mutate(x2 = x2_vals[match(level, lvls)])
-      lines_df$fit <- predict(m, newdata = lines_df)
-      lines_df$level <- factor(lines_df$level, levels = lvls)
-
-
-      # tab 3 (regression)
-      # one row per tract (y = absenteeism, x1 = var 1, x2 = var 2)
-      reg_data <- reactive({
-        validate(need(input$var_reg1 != input$var_reg2, "Pick different variables."))
-        d <- tract_data |>
-          transmute(tract,
-            y  = .data[[input$var_reg3]],
-            x1 = .data[[input$var_reg1]],
-            x2 = .data[[input$var_reg2]]
-          ) |>
-          drop_na()
-        validate(need(nrow(d) > 3, "Not enough tracts with data for this pair of variables.")) # SWAP: neighborhoods
-        d
-      })
-
-      # multiple linear regression, fit by ordinary least squares (OLS)
-      reg_model <- reactive({
-        lm(y ~ x1 + x2, data = reg_data())
-      })
-
-      # coefficient table
-      output$reg_table <- renderTable(
-        {
-          broom::tidy(reg_model()) |>
-            mutate(term = recode(term,
-              "(Intercept)" = "Intercept",
-              x1 = input$var_reg1, x2 = input$var_reg2
-            )) |>
-            select(Term = term, Estimate = estimate, `Std. Error` = std.error, `p-value` = p.value)
-        },
-        digits = 3
-      )
-
       # scatterplot: points are tracts (SWAP: neighborhoods), lines are the model's fit at low / median / high var 2
-      output$reg_scatter <- renderPlot({
+      output$reg_scatter <- plotly::renderPlotly({
         d <- reg_data()
         m <- reg_model()
+        # predicted value and residual for each tract, for hovering
+        d <- d |>
+          mutate(
+            fitted = fitted(m),
+            resid = resid(m),
+            hover = paste0(
+              "Tract: ", sub("Census Tract ", "", tract),
+              "<br>", input$var_reg1, ": ", round(x1, 2),
+              "<br>", input$var_reg3, ": ", round(y, 2),
+              "<br>Predicted: ", round(fitted, 2),
+              "<br>Residual: ", round(resid, 2)
+            )
+          )
         lvls <- c("Low (25th percentile)", "Median", "High (75th percentile)")
         x2_vals <- unname(quantile(d$x2, c(0.25, 0.5, 0.75)))
         lines_df <- expand_grid(
@@ -2203,12 +2169,29 @@ load <- function(new_data = FALSE) {
         lines_df$fit <- predict(m, newdata = lines_df)
         lines_df$level <- factor(lines_df$level, levels = lvls)
 
-        ggplot() +
-          geom_point(data = d, aes(x = x1, y = y), color = "#8856a7", size = 2.5, alpha = 0.8) +
-          geom_line(data = lines_df, aes(x = x1, y = fit, color = level), linewidth = 1) +
-          scale_color_brewer(palette = "Dark2") +
-          labs(x = input$var_reg1, y = input$var_reg3, color = paste0(input$var_reg2, ":")) +
-          theme_minimal()
+        # hover text for the lines
+        lines_df <- lines_df |>
+          mutate(hover = paste0(
+            input$var_reg2, ": ", level, " (", round(x2, 2), ")",
+            "<br>", input$var_reg1, ": ", round(x1, 2),
+            "<br>Predicted ", input$var_reg3, ": ", round(fit, 2)
+          ))
+
+        # same colors as before (purple points, Dark2 lines)
+        plotly::plot_ly(colors = c("#1B9E77", "#D95F02", "#7570B3")) |>
+          plotly::add_markers(
+            data = d, x = ~x1, y = ~y, text = ~hover, hoverinfo = "text",
+            marker = list(color = "#8856a7", size = 9, opacity = 0.8), name = "Tracts"
+          ) |>
+          plotly::add_lines(
+            data = lines_df, x = ~x1, y = ~fit, color = ~level, text = ~hover, hoverinfo = "text",
+            line = list(width = 2)
+          ) |>
+          plotly::layout(
+            xaxis = list(title = input$var_reg1),
+            yaxis = list(title = input$var_reg3),
+            legend = list(title = list(text = paste0(input$var_reg2, ":")))
+          )
       })
 
       # qq plot - to test for normality
@@ -2239,7 +2222,6 @@ load <- function(new_data = FALSE) {
       output$assumptions_text <- renderText({
         assumptions_text()
       })
-    })
   }
 
     # 5.1 Run App ----
