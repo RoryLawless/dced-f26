@@ -832,6 +832,18 @@ load <- function(new_data = FALSE) {
     
     
     
+    # 2.2.15.3 Economic Disadvantage ----
+    economic_disadvantage <- read_xlsx(here::here("data-files", "EdScape_Chapter 2 Schools_Special Pop Students Public School Locations_2025 (1).xlsx"), sheet = 8)
+   
+     clean_econdis <- economic_disadvantage |>
+       select(c("School Code", "School Sector", "Share of At Risk Students")) |>
+       rename("SCHOOL_ID" = "School Code")
+    
+     econdis_geom <- schools_geom |>
+       right_join(clean_econdis, by = ("SCHOOL_ID" == "School Code")) |>
+       rename(estimate = "Share of At Risk Students") |>
+       rename(`School Code` = "SCHOOL_ID")
+    
     
     
     # 2.2.16 Binding and Joining all Data ====
@@ -955,7 +967,7 @@ load <- function(new_data = FALSE) {
     # theres only one row for tract- join by tract
     tract_data <- left_join(tract_abs, tract_vars, by = "tract")
 
-    # una is this what you wanted! to make it run faster????
+
     # i tried to save everything to data files so make sure it works when u run
     saveRDS(data, file = here::here("data-files", "data"))
     saveRDS(block_long, file = here::here("data-files", "block_long"))
