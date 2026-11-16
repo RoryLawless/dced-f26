@@ -1488,122 +1488,249 @@ platform for public reporting, equitable resource allocation, and data-driven de
             )
         ),
       
-      # 3.2.1 Tab- Indicator and Outcome Comparison- Alternative UI ----
+      # 3.2.1 Indicator and Outcome Comparison- Alternative UI 
       tabPanel(
         "Indicator and Outcome Comparison- Alternative UI",
-        tags$b("Choose indicator and outcome variables for side-by-side comparisons of D.C. metrics."), 
-        # variable choices go across the top so the page isnt as cramped
-        fluidRow(
-          column(
-            width = 6,
-            wellPanel(
-              style = "border-width: 3px; border-color: black; background-color: white",
-              tags$h4("Indicator Variables"),
-              navset_bar(
-                nav_menu(
-                  title = tags$b("Select an Indicator Variable"),
-                  # colored by type- attendance in blue, CLASS scores in red
-                  nav_item(radioButtons(
-                    label = "", inputId = "ind_var",
-                    choiceNames = list(
-                      tags$span("Overall Chronic Absenteeism Rate", style = "color: #1d497d"),
-                      tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
-                      tags$span("Attendance Growth Rate", style = "color: #1d497d"),
-                      tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
-                      tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
-                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
+        
+        # map control tabs - configure left Map vs. configure right Map
+        bslib::navset_card_tab(
+          full_screen = FALSE,
+          title = "Map Controls",
+          
+          # configure left map
+          nav_panel(
+            title = "Configure Left Map",
+            
+            fluidRow(
+              column(
+                width = 12,
+                wellPanel(
+                  style = "border-width: 2px; border-color: black; background-color: #f8f9fa; padding: 12px; margin-bottom: 15px;",
+                  tags$p("Select a geographic area below, then expand the categorized menus in the columns underneath to choose any indicator or outcome variable for the left map.", style = "color: #555; font-size: 13px; margin-bottom: 12px;"),
+                  selectInput("area_ind", "Select Area for Left Map", choices = area_choices, width = "40%")
+                )
+              )
+            ),
+            
+            fluidRow(
+              column(
+                width = 6,
+                wellPanel(
+                  style = "border-width: 3px; border-color: black; background-color: white",
+                  tags$h4("Indicator Variables"),
+                  navset_bar(
+                    nav_menu(
+                      title = tags$b("Select an Indicator Variable"),
+                      nav_item(radioButtons(
+                        label = "", inputId = "var_left",
+                        choiceNames = list(
+                          tags$span("Overall Chronic Absenteeism Rate", style = "color: #1d497d"),
+                          tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
+                          tags$span("Attendance Growth Rate", style = "color: #1d497d"),
+                          tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
+                          tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
+                          tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
+                        ),
+                        choiceValues = c(
+                          "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+                          "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                        )
+                      ))
                     ),
-                    choiceValues = c(
-                      "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
-                    )
-                  ))
-                ),
-                navbar_options = navbar_options(bg = "white")
+                    navbar_options = navbar_options(bg = "white")
+                  )
+                )
+              ),
+              column(
+                width = 6,
+                wellPanel(
+                  style = "border-width: 3px; border-color: black; background-color: white",
+                  tags$h4("Outcome Variables"),
+                  navset_bar(
+                    nav_menu(
+                      title = tags$b("Economic Opportunity & Housing Affordability", style = "color: #0a3308"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Poverty Rate (%)", "Median Household Income"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Demographic Diversity", style = "color: #194d4d"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Foreign-Born", "Percent White Only"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Public Safety & Neighborhood Quality", style = "color: #c0504d"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Land Use Diversity Score (0-1)", "Percent Positive Land Uses", "Parks Per Capita", "Crimes Per Capita in 2025"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Transportation & Recreational Access", style = "color: #1d497d"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Child Development Centers Per Capita", "Transit Stops Per Capita"), inline = TRUE))
+                    ),
+                    nav_panel(title = tags$b("Built Environment Indicators")),
+                    nav_menu(
+                      title = tags$i("Access to School", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to School", "Percent Tract Within 15-Minute Walk to Modernized School", "Percent Tract Within 2-Minute Walk of School Crossing Guard", "Percent Tract Along Safe Route to School")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Parks & Recreation Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to Playground", "Percent Tract Within 15-Minute Walk of Recreation Center", "Percent Tract Within 10-Minute Walk of Park", "Percent Tract Within 1/4 Mile of Trail")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Safety & Wellness", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Health Care Facility", "Percent Tract Within 15-Minute Walk of Mental Health Provider", "Percent Tract Within 15-Minute Walk of Police Department", "Percent Tract Within 15-Minute Walk of Fire Station", "Percent Tract Within 250 Feet of High Injury Network Corridor", "Percent Tract Within 15-Minute Walk of Liquor Store")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Access to Transit", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 2-Minute Walk of Bus Stop", "Percent Tract Within 15-Minute Walk of Metro Station", "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location", "Percent Street Area With Bike Lanes", "Percent Households With Work Commute Under 45 Mins")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Public Safety & Tract Infrastructure", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Buildings of Good Quality", "Percent Homes Built Since 1970", "Percent 311 Calls Made for Sidewalk Repair", "Percent Tract Within 2-Minute Walk of Vacant or Blighted House", "Percent Tract Within 2-Minute Walk of Vacant Lot", "Percent Sidewalks Within 30 Feet of Streetlight", "Percent Tract Alleys and Parking Lots")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Digital Access & Educational Resources", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Library", "Percent Tract Within 15-Minute Walk of Wireless Hotspot", "Percent Households With Broadband Internet")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Economic & Financial Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Banking Institution", "Percent Tract Within 15-Minute Walk of Cash Checking Institution", "Percent Housing Units Affordable")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Food Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Farmers Market", "Percent Tract Within 5-Minute Walk of Restaurant", "Percent Tract Within 15-Minute Walk of Grocery Store", "Percent Tract in Low Food Access Area", "Percent Tract Within 15-Minute Walk of Healthy Corner Store")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Climate Resilience", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")))
+                    ),
+                    navbar_options = navbar_options(bg = "white")
+                  )
+                )
               )
             )
           ),
-          column(
-            width = 6,
-            wellPanel(
-              style = "border-width: 3px; border-color: black; background-color: white",
-              tags$h4("Outcome Variables"),
-              navset_bar(
-                nav_menu(
-                  title = tags$b("Economic Opportunity & Housing Affordability", style = "color: #0a3308"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", choices = c("Poverty Rate (%)", "Median Household Income"), inline = TRUE))
-                ),
-                nav_menu(
-                  title = tags$b("Demographic Diversity", style = "color: #194d4d"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Foreign-Born", "Percent White Only"), inline = TRUE))
-                ),
-                nav_menu(
-                  title = tags$b("Public Safety & Neighborhood Quality", style = "color: #c0504d"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Land Use Diversity Score (0-1)", "Percent Positive Land Uses", "Parks Per Capita", "Crimes Per Capita in 2025"), inline = TRUE))
-                ),
-                nav_menu(
-                  title = tags$b("Transportation & Recreational Access", style = "color: #1d497d"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Child Development Centers Per Capita", "Transit Stops Per Capita"), inline = TRUE))
-                ),
-                nav_panel(title = tags$b("Built Environment Indicators")),
-                nav_menu(
-                  title = tags$i("Access to School", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to School", "Percent Tract Within 15-Minute Walk to Modernized School", "Percent Tract Within 2-Minute Walk of School Crossing Guard", "Percent Tract Along Safe Route to School")))
-                ),
-                nav_menu(
-                  title = tags$i("Parks & Recreation Access", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to Playground", "Percent Tract Within 15-Minute Walk of Recreation Center", "Percent Tract Within 10-Minute Walk of Park", "Percent Tract Within 1/4 Mile of Trail")))
-                ),
-                nav_menu(
-                  title = tags$i("Safety & Wellness", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Health Care Facility", "Percent Tract Within 15-Minute Walk of Mental Health Provider", "Percent Tract Within 15-Minute Walk of Police Department", "Percent Tract Within 15-Minute Walk of Fire Station", "Percent Tract Within 250 Feet of High Injury Network Corridor", "Percent Tract Within 15-Minute Walk of Liquor Store")))
-                ),
-                nav_menu(
-                  title = tags$i("Access to Transit", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 2-Minute Walk of Bus Stop", "Percent Tract Within 15-Minute Walk of Metro Station", "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location", "Percent Street Area With Bike Lanes", "Percent Households With Work Commute Under 45 Mins")))
-                ),
-                nav_menu(
-                  title = tags$i("Public Safety & Tract Infrastructure", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Buildings of Good Quality", "Percent Homes Built Since 1970", "Percent 311 Calls Made for Sidewalk Repair", "Percent Tract Within 2-Minute Walk of Vacant or Blighted House", "Percent Tract Within 2-Minute Walk of Vacant Lot", "Percent Sidewalks Within 30 Feet of Streetlight", "Percent Tract Alleys and Parking Lots")))
-                ),
-                nav_menu(
-                  title = tags$i("Digital Access & Educational Resources", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Library", "Percent Tract Within 15-Minute Walk of Wireless Hotspot", "Percent Households With Broadband Internet")))
-                ),
-                nav_menu(
-                  title = tags$i("Economic & Financial Access", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Banking Institution", "Percent Tract Within 15-Minute Walk of Cash Checking Institution", "Percent Housing Units Affordable")))
-                ),
-                nav_menu(
-                  title = tags$i("Food Access", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Farmers Market", "Percent Tract Within 5-Minute Walk of Restaurant", "Percent Tract Within 15-Minute Walk of Grocery Store", "Percent Tract in Low Food Access Area", "Percent Tract Within 15-Minute Walk of Healthy Corner Store")))
-                ),
-                nav_menu(
-                  title = tags$i("Climate Resilience", style = "color: #401155"),
-                  nav_item(radioButtons(label = "", inputId = "out_var", selected = character(0), choices = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")))
-                ),
-                navbar_options = navbar_options(bg = "white")
+          
+          # configure right map
+          nav_panel(
+            title = "Configure Right Map",
+            
+            fluidRow(
+              column(
+                width = 12,
+                wellPanel(
+                  style = "border-width: 2px; border-color: black; background-color: #f8f9fa; padding: 12px; margin-bottom: 15px;",
+                  tags$p("Select a geographic area below, then expand the categorized menus in the columns underneath to choose any indicator or outcome variable for the right map.", style = "color: #555; font-size: 13px; margin-bottom: 12px;"),
+                  selectInput("area_out", "Select Area for Right Map", choices = area_choices, width = "40%")
+                )
+              )
+            ),
+            
+            fluidRow(
+              column(
+                width = 6,
+                wellPanel(
+                  style = "border-width: 3px; border-color: black; background-color: white",
+                  tags$h4("Indicator Variables"),
+                  navset_bar(
+                    nav_menu(
+                      title = tags$b("Select an Indicator Variable"),
+                      nav_item(radioButtons(
+                        label = "", inputId = "var_right",
+                        choiceNames = list(
+                          tags$span("Overall Chronic Absenteeism Rate", style = "color: #1d497d"),
+                          tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
+                          tags$span("Attendance Growth Rate", style = "color: #1d497d"),
+                          tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
+                          tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
+                          tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
+                        ),
+                        choiceValues = c(
+                          "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+                          "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                        )
+                      ))
+                    ),
+                    navbar_options = navbar_options(bg = "white")
+                  )
+                )
+              ),
+              column(
+                width = 6,
+                wellPanel(
+                  style = "border-width: 3px; border-color: black; background-color: white",
+                  tags$h4("Outcome Variables"),
+                  navset_bar(
+                    nav_menu(
+                      title = tags$b("Economic Opportunity & Housing Affordability", style = "color: #0a3308"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Poverty Rate (%)", "Median Household Income"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Demographic Diversity", style = "color: #194d4d"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Foreign-Born", "Percent White Only"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Public Safety & Neighborhood Quality", style = "color: #c0504d"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Land Use Diversity Score (0-1)", "Percent Positive Land Uses", "Parks Per Capita", "Crimes Per Capita in 2025"), inline = TRUE))
+                    ),
+                    nav_menu(
+                      title = tags$b("Transportation & Recreational Access", style = "color: #1d497d"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Child Development Centers Per Capita", "Transit Stops Per Capita"), inline = TRUE))
+                    ),
+                    nav_panel(title = tags$b("Built Environment Indicators")),
+                    nav_menu(
+                      title = tags$i("Access to School", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to School", "Percent Tract Within 15-Minute Walk to Modernized School", "Percent Tract Within 2-Minute Walk of School Crossing Guard", "Percent Tract Along Safe Route to School")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Parks & Recreation Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk to Playground", "Percent Tract Within 15-Minute Walk of Recreation Center", "Percent Tract Within 10-Minute Walk of Park", "Percent Tract Within 1/4 Mile of Trail")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Safety & Wellness", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Health Care Facility", "Percent Tract Within 15-Minute Walk of Mental Health Provider", "Percent Tract Within 15-Minute Walk of Police Department", "Percent Tract Within 15-Minute Walk of Fire Station", "Percent Tract Within 250 Feet of High Injury Network Corridor", "Percent Tract Within 15-Minute Walk of Liquor Store")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Access to Transit", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 2-Minute Walk of Bus Stop", "Percent Tract Within 15-Minute Walk of Metro Station", "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location", "Percent Street Area With Bike Lanes", "Percent Households With Work Commute Under 45 Mins")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Public Safety & Tract Infrastructure", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Buildings of Good Quality", "Percent Homes Built Since 1970", "Percent 311 Calls Made for Sidewalk Repair", "Percent Tract Within 2-Minute Walk of Vacant or Blighted House", "Percent Tract Within 2-Minute Walk of Vacant Lot", "Percent Sidewalks Within 30 Feet of Streetlight", "Percent Tract Alleys and Parking Lots")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Digital Access & Educational Resources", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Library", "Percent Tract Within 15-Minute Walk of Wireless Hotspot", "Percent Households With Broadband Internet")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Economic & Financial Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Banking Institution", "Percent Tract Within 15-Minute Walk of Cash Checking Institution", "Percent Housing Units Affordable")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Food Access", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract Within 15-Minute Walk of Farmers Market", "Percent Tract Within 5-Minute Walk of Restaurant", "Percent Tract Within 15-Minute Walk of Grocery Store", "Percent Tract in Low Food Access Area", "Percent Tract Within 15-Minute Walk of Healthy Corner Store")))
+                    ),
+                    nav_menu(
+                      title = tags$i("Climate Resilience", style = "color: #401155"),
+                      nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")))
+                    ),
+                    navbar_options = navbar_options(bg = "white")
+                  )
+                )
               )
             )
           )
         ),
-        # indicator map on the left, outcome map on the right
+        
+        # --- Bottom Section: Dual Maps and Outputs ---
         fluidRow(
           column(
             width = 6,
-            selectInput("area_ind", "Area", choices = area_choices),
             leafletOutput("map_ind", height = "500px"),
             tableOutput("stats_ind"),
             plotOutput("hist_ind", height = "250px")
           ),
           column(
             width = 6,
-            selectInput("area_out", "Area", choices = area_choices),
             checkboxInput("show_schools_out", "% of Students Chronically Absent by School", value = FALSE),
             checkboxInput("show_air_quality_out", "2024 Air Quality Monitoring Sites", value = FALSE),
             checkboxInput("show_parks_out", "Parks and Recreation Locations", value = FALSE),
-            checkboxInput("show_elascores_out", "3rd Grade ELA Scores", value = FALSE),
-            checkboxInput("show_mathscores_out", "8th Grade Algebra Scores", value = FALSE),
             leafletOutput("map_out", height = "500px"),
             textOutput("pct_out"),
             tableOutput("stats_out"),
@@ -2089,6 +2216,115 @@ platform for public reporting, equitable resource allocation, and data-driven de
         paste0("Overall percentage for land area: ", round((sum(filtered_out()$var_count, na.rm = TRUE) / sum(filtered_out()$land_area, na.rm = TRUE)) * 100, 2), "%")
       } else if (unique(filtered_out()$summary_type == "percent pop")) {
         paste0("Overall percentage for area population: ", round((sum(filtered_out()$var_count, na.rm = TRUE) / sum(filtered_out()$pop, na.rm = TRUE)) * 100, 2), "%")
+      } else {
+        ""
+      }
+    })
+    
+    # 4.1.4.2 Indicator & Outcome Comparison Tab - Alternative UI
+    
+    # defining indicator variables
+    indicator_vars <- c(
+      "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+    )
+    
+    # left side data
+    filtered_ind <- reactive({
+      req(input$var_left)
+      var <- input$var_left
+      
+      if (var %in% indicator_vars) {
+        d <- school_indicators |> filter(variable == var)
+        if (input$area_ind != "Citywide") {
+          d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
+        }
+        validate(need(nrow(d) > 0, "No schools with data for this variable in this area."))
+      } else {
+        d <- data |> filter(variable == var)
+        if (input$area_ind != "Citywide") {
+          d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
+        }
+        if (unique(d$variable) %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
+          d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(pop) ~ (estimate / 100) * pop, .default = NA), summary_type = "percent pop")
+        } else if (substr(unique(d$variable), 1, 20) == "Percent Tract Within") {
+          d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(land_area) ~ (estimate / 100) * land_area, .default = NA), summary_type = "percent land")
+        } else if (unique(d$variable) %in% c("Crimes Per Capita in 2025", "Child Development Centers Per Capita", "Affordable Housing Units Constructed Since 2015 Per Capita", "Transit Stops Per Capita", "Parks Per Capita")) {
+          d <- d |> mutate(var_count = estimate * pop, summary_type = "per capita")
+        } else {
+          d <- d |> mutate(var_count = NA, summary_type = "none")
+        }
+      }
+      d
+    })
+    
+    # right side data 
+    
+    filtered_out <- reactive({
+      req(input$var_right)
+      var <- input$var_right
+      
+      if (var %in% indicator_vars) {
+        d <- school_indicators |> filter(variable == var)
+        if (input$area_out != "Citywide") {
+          d <- d |> filter(neighborhood == input$area_out | ward == input$area_out)
+        }
+        validate(need(nrow(d) > 0, "No schools with data for this variable in this area."))
+      } else {
+        d <- data |> filter(variable == var)
+        if (input$area_out != "Citywide") {
+          d <- d |> filter(neighborhood == input$area_out | ward == input$area_out)
+        }
+        if (unique(d$variable) %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
+          d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(pop) ~ (estimate / 100) * pop, .default = NA), summary_type = "percent pop")
+        } else if (substr(unique(d$variable), 1, 20) == "Percent Tract Within") {
+          d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(land_area) ~ (estimate / 100) * land_area, .default = NA), summary_type = "percent land")
+        } else if (unique(d$variable) %in% c("Crimes Per Capita in 2025", "Child Development Centers Per Capita", "Affordable Housing Units Constructed Since 2015 Per Capita", "Transit Stops Per Capita", "Parks Per Capita")) {
+          d <- d |> mutate(var_count = estimate * pop, summary_type = "per capita")
+        } else {
+          d <- d |> mutate(var_count = NA, summary_type = "none")
+        }
+      }
+      d
+    })
+    
+    # left side outputs
+    
+    output$map_ind <- renderLeaflet({
+      req(input$var_left)
+      if (input$var_left %in% indicator_vars) {
+        make_school_map(filtered_ind())
+      } else {
+        make_map(filtered_ind(), show_air_quality = FALSE, show_schools = FALSE, show_parks = FALSE)
+      }
+    })
+    output$stats_ind <- renderTable({ make_stats(filtered_ind()) })
+    output$hist_ind <- renderPlot({ make_hist(filtered_ind()) })
+    
+    # right side outputs
+    
+    output$map_out <- renderLeaflet({
+      req(input$var_right)
+      if (input$var_right %in% indicator_vars) {
+        make_school_map(filtered_out())
+      } else {
+        make_map(filtered_out(), show_air_quality = input$show_air_quality_out, show_schools = input$show_schools_out, show_parks = input$show_parks_out)
+      }
+    })
+    output$stats_out <- renderTable({ make_stats(filtered_out()) })
+    output$hist_out <- renderPlot({ make_hist(filtered_out()) })
+    
+    output$pct_out <- renderText({
+      req(input$var_right)
+      if (input$var_right %in% indicator_vars) return("")
+      d <- filtered_out()
+      if (!("summary_type" %in% names(d))) return("")
+      if (unique(d$summary_type == "per capita")) {
+        paste("Per capita statistic for overall area:", round((sum(d$var_count, na.rm = TRUE) / sum(d$pop, na.rm = TRUE)), 2))
+      } else if (unique(d$summary_type == "percent land")) {
+        paste0("Overall percentage for land area: ", round((sum(d$var_count, na.rm = TRUE) / sum(d$land_area, na.rm = TRUE)) * 100, 2), "%")
+      } else if (unique(d$summary_type == "percent pop")) {
+        paste0("Overall percentage for area population: ", round((sum(d$var_count, na.rm = TRUE) / sum(d$pop, na.rm = TRUE)) * 100, 2), "%")
       } else {
         ""
       }
