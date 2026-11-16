@@ -192,7 +192,7 @@ load <- function(new_data = FALSE) {
     
     
   # 2.2.5 Grad and Commute Data ====
-    # Loading in HS grad grads (includes demographic rates too), but doesn't include charter schools
+    # HS grad grads (includes demographic rates too), but doesn't include charter schools
     hs_grad_rates <- read.csv(here::here("data-files", "hs_grad_rates.csv"))
 
     # student commute patterns by school planning area- 10 planning areas
