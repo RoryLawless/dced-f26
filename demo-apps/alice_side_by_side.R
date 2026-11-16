@@ -788,15 +788,17 @@ load <- function(new_data = FALSE) {
       mutate(variable = "Percent 3rd Grade Students Meeting/Exceeding ELA Requirements") 
     
     clean_3rd_ela$Percent <- as.integer(gsub("[<>%]", "", clean_3rd_ela$Percent))
+   
     
+    dcps_locs <-   st_read(here::here("data-files", "dcps_geom"), quiet = TRUE) |>
+      st_transform(4326) |>
+      mutate(SCHOOL_ID = as.character(SCHOOL_ID)) |>
+      select(c("SCHOOL_ID", "geometry", "SCHOOL_YEA")) |>
+      filter(SCHOOL_YEA == "SY25-26") |>
+      distinct(SCHOOL_ID, .keep_all = TRUE)
+      
     
-    
-    schools_geom <- schools_shapefile |>
-      select(c("SCHOOL_ID", "geometry")) |>
-      mutate("SCHOOL_ID" = as.character(SCHOOL_ID)
-      )
-    
-    elascores_geom <- schools_geom |>
+    elascores_geom <- dcps_locs |>
       right_join(clean_3rd_ela, by = "SCHOOL_ID") |>
       rename(estimate = "Percent") |>
       rename(`School Code` = "SCHOOL_ID")
@@ -818,12 +820,8 @@ load <- function(new_data = FALSE) {
     
     
     
-    schools_geom <- schools_shapefile |>
-      select(c("SCHOOL_ID", "geometry")) |>
-      mutate("SCHOOL_ID" = as.character(SCHOOL_ID)
-      )
     
-    mathscores_geom <- schools_geom |>
+    mathscores_geom <- dcps_locs |>
       right_join(clean_8th_math, by = "SCHOOL_ID") |>
       rename(estimate = "Percent") |>
       rename(`School Code` = "SCHOOL_ID")
@@ -836,13 +834,17 @@ load <- function(new_data = FALSE) {
     economic_disadvantage <- read_xlsx(here::here("data-files", "EdScape_Chapter 2 Schools_Special Pop Students Public School Locations_2025 (1).xlsx"), sheet = 8)
    
      clean_econdis <- economic_disadvantage |>
+       filter(`School year` == "SY24-25") |>
        select(c("School Code", "School Sector", "Share of At Risk Students")) |>
-       rename("SCHOOL_ID" = "School Code")
+       rename("SCHOOL_ID" = `School Code`) |>
+       mutate(SCHOOL_ID = as.character(SCHOOL_ID))
+     
+    dcps_locs <- dcps_locs |>
+      select(-SCHOOL_YEA)
     
-     econdis_geom <- schools_geom |>
-       right_join(clean_econdis, by = ("SCHOOL_ID" == "School Code")) |>
-       rename(estimate = "Share of At Risk Students") |>
-       rename(`School Code` = "SCHOOL_ID")
+     econdis_geom <- dcps_locs |>
+       right_join(clean_econdis, by = "SCHOOL_ID") |>
+       rename(estimate = "Share of At Risk Students")
     
     
     
@@ -1104,9 +1106,12 @@ load <- function(new_data = FALSE) {
     tabsetPanel(
       id = "main_tabs",
       tabPanel(
-        "Welcome!",
+        "Instruction Page",
         tags$p(""),
-        tags$b("This dashboard can be used to compare the impact of various indicator variables on upward mobility and educational attainment."),
+        tags$b("This dashboard can be used to explore the impact of educational factors on upward mobility across the District of Columbia. It includes aggregated disparate indicators into a unified structure across census tract, neighborhood, ward, and citywide scales. The project aims to
+illustrate variations in opportunity and offers statistical analysis tools that can be used to
+evaluate how targeted policy interventions can close gaps in opportunity, providing a localized
+platform for public reporting, equitable resource allocation, and data-driven decision-making."),
         tags$p(""),
         fluidRow(
           column(
@@ -1291,12 +1296,20 @@ load <- function(new_data = FALSE) {
                   tags$li("Chronic Absenteeism Rate"),
                   tags$li("Pre-K Chronic Absenteeism Rate"),
                   tags$li("Attendance Growth"),
+                )
+              ),
+              wellPanel(
+                style = "border-width: 3px; border-color: #1d497d; background-color: white",
+                tags$b("Classroom Metrics"),
+                tags$ul(
                   tags$li("CLASS Framework - Pre-K Classroom Organization"),
                   tags$li("CLASS Framework - Pre-K Emotional Support"),
                   tags$li("CLASS Framework - Pre-K Instructional Support"),
                   tags$li("3rd Grade ELA Scores"),
-                  tags$li("8th Grade Math Scores")
+                  tags$li("8th Grade Math Scores"),
+                  tags$li("School Level Economic Disadvantage")
                 )
+                
               ),
               wellPanel(
                 style = "border-width: 3px; border-color: #401155; background-color: white",
@@ -1478,6 +1491,7 @@ load <- function(new_data = FALSE) {
       # 3.2.1 Tab- Indicator and Outcome Comparison- Alternative UI ----
       tabPanel(
         "Indicator and Outcome Comparison- Alternative UI",
+        tags$b("Choose indicator and outcome variables for side-by-side comparisons of D.C. metrics."), 
         # variable choices go across the top so the page isnt as cramped
         fluidRow(
           column(
@@ -1602,6 +1616,7 @@ load <- function(new_data = FALSE) {
       # 3.1.3 Block DC Tab ----
       tabPanel(
         "Block/Neighborhood/School Breakdown",
+        tags$b("This page can be used to observe select variables by D.C. block."),
         fluidRow(
           column(
             width = 12,
@@ -1617,7 +1632,7 @@ load <- function(new_data = FALSE) {
       # 3.1.4 Regression Tab ----
       # title explanation
       tabPanel(
-        "Initial OLS Regression",
+        "Regression",
         p("What is the impact of Variable 1 on the outcome variable, while controlling for Variable 2?"),
         fluidRow(
           # drop down to select var1
