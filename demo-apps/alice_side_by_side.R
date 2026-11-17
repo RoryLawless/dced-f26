@@ -201,7 +201,7 @@ load <- function(new_data = FALSE) {
     # student commute patterns by ward
     commute_ward <- read.csv(here::here("data-files", "commute_patterns_ward.csv"))
 
-    # point data for school absente checkbox
+    # point data for school absentee checkbox (below in absenteeism chunk)
     
     
     # 2.2.8 Absenteeism and Attendance Data
@@ -1011,7 +1011,7 @@ load <- function(new_data = FALSE) {
     filter(Student.Group == "All Report Card Students") |>
     mutate(
       variable = recode(Metric,
-        "Chronic Absenteeism" = "Overall Chronic Absenteeism Rate",
+        "Chronic Absenteeism" = "Chronic Absenteeism Rates by School",
         "Pre-K Chronic Absenteeism" = "Pre-K Chronic Absenteeism Rate",
         "Attendance Growth" = "Attendance Growth Rate",
         "CLASS - Pre-K Classroom Organization" = "CLASS Metric - Pre-K Classroom Organization",
@@ -1518,29 +1518,25 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
                   tags$h4("Indicator Variables"),
-                  navset_bar(
-                    nav_menu(
-                      title = tags$b("Select an Indicator Variable"),
-                      nav_item(radioButtons(
-                        label = "", inputId = "var_left",
-                        choiceNames = list(
-                          tags$span("Overall Chronic Absenteeism Rate", style = "color: #1d497d"),
-                          tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
-                          tags$span("Attendance Growth Rate", style = "color: #1d497d"),
-                          tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
-                          tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
-                          tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
-                        ),
-                        choiceValues = c(
-                          "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-                          "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
-                        )
-                      ))
+                  radioButtons(
+                    inputId = "var_left",
+                    label = "",
+                    choiceNames = list(
+                      tags$span("Chronic Absenteeism Rates by School", style = "color: #1d497d"),
+                      tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
+                      tags$span("Attendance Growth Rate", style = "color: #1d497d"),
+                      tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
+                      tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
+                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
                     ),
-                    navbar_options = navbar_options(bg = "white")
+                    choiceValues = c(
+                      "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                    )
                   )
                 )
               ),
+              
               column(
                 width = 6,
                 wellPanel(
@@ -1600,6 +1596,18 @@ platform for public reporting, equitable resource allocation, and data-driven de
                       title = tags$i("Climate Resilience", style = "color: #401155"),
                       nav_item(radioButtons(label = "", inputId = "var_left", selected = character(0), choices = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")))
                     ),
+                    nav_menu(
+                      title = tags$b("Point Data Overlays", style = "color: #1d497d"),
+                      nav_item(radioButtons(
+                        label = "", inputId = "var_left", selected = character(0),
+                        choices = c(
+                          "Chronic Absenteeism Rates by School",
+                          "2024 Air Quality Monitoring Sites",
+                          "Parks and Recreation Locations"
+                        ),
+                        inline = TRUE
+                      ))
+                    ),
                     navbar_options = navbar_options(bg = "white")
                   )
                 )
@@ -1628,29 +1636,25 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
                   tags$h4("Indicator Variables"),
-                  navset_bar(
-                    nav_menu(
-                      title = tags$b("Select an Indicator Variable"),
-                      nav_item(radioButtons(
-                        label = "", inputId = "var_right",
-                        choiceNames = list(
-                          tags$span("Overall Chronic Absenteeism Rate", style = "color: #1d497d"),
-                          tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
-                          tags$span("Attendance Growth Rate", style = "color: #1d497d"),
-                          tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
-                          tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
-                          tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
-                        ),
-                        choiceValues = c(
-                          "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-                          "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
-                        )
-                      ))
+                  radioButtons(
+                    inputId = "var_right",
+                    label = "",
+                    choiceNames = list(
+                      tags$span("Chronic Absenteeism Rates by School", style = "color: #1d497d"),
+                      tags$span("Pre-K Chronic Absenteeism Rate", style = "color: #1d497d"),
+                      tags$span("Attendance Growth Rate", style = "color: #1d497d"),
+                      tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
+                      tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
+                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
                     ),
-                    navbar_options = navbar_options(bg = "white")
+                    choiceValues = c(
+                      "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                    )
                   )
                 )
               ),
+              
               column(
                 width = 6,
                 wellPanel(
@@ -1710,6 +1714,18 @@ platform for public reporting, equitable resource allocation, and data-driven de
                       title = tags$i("Climate Resilience", style = "color: #401155"),
                       nav_item(radioButtons(label = "", inputId = "var_right", selected = character(0), choices = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")))
                     ),
+                    nav_menu(
+                      title = tags$b("Point Data Overlays", style = "color: #1d497d"),
+                      nav_item(radioButtons(
+                        label = "", inputId = "var_right", selected = character(0),
+                        choices = c(
+                          "Chronic Absenteeism Rates by School",
+                          "2024 Air Quality Monitoring Sites",
+                          "Parks and Recreation Locations"
+                        ),
+                        inline = TRUE
+                      ))
+                    ),
                     navbar_options = navbar_options(bg = "white")
                   )
                 )
@@ -1728,9 +1744,9 @@ platform for public reporting, equitable resource allocation, and data-driven de
           ),
           column(
             width = 6,
-            checkboxInput("show_schools_out", "% of Students Chronically Absent by School", value = FALSE),
-            checkboxInput("show_air_quality_out", "2024 Air Quality Monitoring Sites", value = FALSE),
-            checkboxInput("show_parks_out", "Parks and Recreation Locations", value = FALSE),
+            #checkboxInput("show_schools_out", "% of Students Chronically Absent by School", value = FALSE),
+            #checkboxInput("show_air_quality_out", "2024 Air Quality Monitoring Sites", value = FALSE),
+            #checkboxInput("show_parks_out", "Parks and Recreation Locations", value = FALSE),
             leafletOutput("map_out", height = "500px"),
             textOutput("pct_out"),
             tableOutput("stats_out"),
@@ -1767,7 +1783,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
             width = 6,
             selectInput("var_reg1", "Indicator Variable 1",
               choices = indicator_vars,
-              selected = "Absentee Rate"
+              selected = "Chronic Absenteeism Rates by School"
             )
           ),
           # dropdonw to select var2
@@ -2225,14 +2241,24 @@ platform for public reporting, equitable resource allocation, and data-driven de
     
     # defining indicator variables
     indicator_vars <- c(
-      "Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+      "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
+      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support",
+      "% of Students Chronically Absent by School"
+    )
+    
+    point_overlay_outcome_vars <- c(
+      "2024 Air Quality Monitoring Sites", "Parks and Recreation Locations"
     )
     
     # left side data
     filtered_ind <- reactive({
       req(input$var_left)
       var <- input$var_left
+      
+      # Fallback background map if an overlay is selected - simran is changing this eventually so they can pick background map + overlay
+      if (var %in% point_overlay_outcome_vars) {
+        var <- "Poverty Rate (%)"
+      }
       
       if (var %in% indicator_vars) {
         d <- school_indicators |> filter(variable == var)
@@ -2245,7 +2271,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
         if (input$area_ind != "Citywide") {
           d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
         }
-        if (unique(d$variable) %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
+        if (var %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
           d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(pop) ~ (estimate / 100) * pop, .default = NA), summary_type = "percent pop")
         } else if (substr(unique(d$variable), 1, 20) == "Percent Tract Within") {
           d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(land_area) ~ (estimate / 100) * land_area, .default = NA), summary_type = "percent land")
@@ -2264,6 +2290,10 @@ platform for public reporting, equitable resource allocation, and data-driven de
       req(input$var_right)
       var <- input$var_right
       
+      if (var %in% point_overlay_outcome_vars) {
+        var <- "Poverty Rate (%)"
+      }
+      
       if (var %in% indicator_vars) {
         d <- school_indicators |> filter(variable == var)
         if (input$area_out != "Citywide") {
@@ -2275,7 +2305,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
         if (input$area_out != "Citywide") {
           d <- d |> filter(neighborhood == input$area_out | ward == input$area_out)
         }
-        if (unique(d$variable) %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
+        if (var %in% c("Poverty Rate (%)", "Percent Foreign-Born", "Percent White Only")) {
           d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(pop) ~ (estimate / 100) * pop, .default = NA), summary_type = "percent pop")
         } else if (substr(unique(d$variable), 1, 20) == "Percent Tract Within") {
           d <- d |> mutate(var_count = case_when(!is.na(estimate) & !is.na(land_area) ~ (estimate / 100) * land_area, .default = NA), summary_type = "percent land")
@@ -2292,10 +2322,13 @@ platform for public reporting, equitable resource allocation, and data-driven de
     
     output$map_ind <- renderLeaflet({
       req(input$var_left)
-      if (input$var_left %in% indicator_vars) {
+      var <- input$var_left
+      if (var %in% indicator_vars) {
         make_school_map(filtered_ind())
       } else {
-        make_map(filtered_ind(), show_air_quality = FALSE, show_schools = FALSE, show_parks = FALSE)
+        is_air <- (var == "2024 Air Quality Monitoring Sites")
+        is_parks <- (var == "Parks and Recreation Locations")
+        make_map(filtered_ind(), show_air_quality = is_air, show_schools = FALSE, show_parks = is_parks)
       }
     })
     output$stats_ind <- renderTable({ make_stats(filtered_ind()) })
@@ -2305,15 +2338,19 @@ platform for public reporting, equitable resource allocation, and data-driven de
     
     output$map_out <- renderLeaflet({
       req(input$var_right)
-      if (input$var_right %in% indicator_vars) {
+      var <- input$var_right
+      if (var %in% indicator_vars) {
         make_school_map(filtered_out())
       } else {
-        make_map(filtered_out(), show_air_quality = input$show_air_quality_out, show_schools = input$show_schools_out, show_parks = input$show_parks_out)
+        is_air <- (var == "2024 Air Quality Monitoring Sites")
+        is_parks <- (var == "Parks and Recreation Locations")
+        make_map(filtered_out(), show_air_quality = is_air, show_schools = FALSE, show_parks = is_parks)
       }
     })
     output$stats_out <- renderTable({ make_stats(filtered_out()) })
     output$hist_out <- renderPlot({ make_hist(filtered_out()) })
     
+    # These are for background variable still! need to think about if we want summary stats for both if they select two variables on one map
     output$pct_out <- renderText({
       req(input$var_right)
       if (input$var_right %in% indicator_vars) return("")
