@@ -26,6 +26,7 @@ load <- function(new_data = FALSE) {
     air_quality_by_sites_sf <- readRDS(here::here("data-files", "air_quality_by_sites_sf"))
     elascores_geom <- readRDS(here::here("data-files", "elascores_geom"))
     mathscores_geom <- readRDS(here::here("data-files", "mathscores_geom"))
+    econdis_geom <- readRDS(here::here("data-files", "econdis_geom"))
   }
   # 2.2 Remote Data ----
     if (new_data == TRUE) {
@@ -979,6 +980,7 @@ load <- function(new_data = FALSE) {
     saveRDS(air_quality_by_sites_sf, file = here::here("data-files", "air_quality_by_sites_sf"))
     saveRDS(elascores_geom, file = here::here("data-files", "elascores_geom"))
     saveRDS(mathscores_geom, file = here::here("data-files", "mathscores_geom"))
+    saveRDS(econdis_geom, file = here::here("data-files", "econdis_geom"))
   }
   # 2.2.16 School Indicator Data (attendance + pre-k CLASS scores) ====
 
@@ -1007,6 +1009,7 @@ load <- function(new_data = FALSE) {
     # read as character bc some scores have n<10 in them
     read.csv(here::here("data-files", "abs_data_demograph.csv"), colClasses = "character"),
     read.csv(here::here("data-files", "CLASS_metrics.csv"), colClasses = "character")
+            
   ) |>
     filter(Student.Group == "All Report Card Students") |>
     mutate(
@@ -1030,6 +1033,38 @@ load <- function(new_data = FALSE) {
     st_join(tract_areas, join = st_within) |>
     mutate(percent = variable %in% c("Overall Chronic Absenteeism Rate", "Pre-K Chronic Absenteeism Rate")) |>
     select(variable, estimate, short_name, neighborhood, ward, percent, geometry)
+  
+  school_names <- read.csv(here::here("data-files", "abs_data_demograph.csv"), colClasses = "character") |>
+    transmute(SCHOOL_ID = as.integer(School.Code), short_name = School.Name) |>
+    distinct(SCHOOL_ID, .keep_all = TRUE)
+  
+  prep_geom <- function(x, id_col, var_name) {
+    x |>
+      filter(!st_is_empty(geometry), !is.na(estimate)) |>
+      mutate(
+        SCHOOL_ID = as.integer(.data[[id_col]]),
+        estimate  = as.numeric(estimate),
+        variable  = var_name
+      ) |>
+      select(variable, estimate, SCHOOL_ID, geometry)
+  }
+  
+  school_geom_indicators <- rbind(
+    prep_geom(elascores_geom,  "School Code", "3rd Grade ELA Scores"),
+    prep_geom(mathscores_geom, "School Code", "8th Grade Algebra Scores"),
+    prep_geom(econdis_geom,    "SCHOOL_ID",   "Student Economic Disadvantage")
+  ) |>
+    left_join(school_names, by = "SCHOOL_ID") |>
+    mutate(short_name = coalesce(short_name, paste("School", SCHOOL_ID))) |>
+    st_join(tract_areas, join = st_within) |>
+    mutate(percent = TRUE) |>
+    select(variable, estimate, short_name, neighborhood, ward, percent, geometry) 
+    
+    
+  
+  school_indicators <- rbind(school_indicators, school_geom_indicators)
+  
+  
 
     # 2.3 Variables for indicator Drop down ----
   # dropdown shows list of area type 
@@ -1527,11 +1562,15 @@ platform for public reporting, equitable resource allocation, and data-driven de
                       tags$span("Attendance Growth Rate", style = "color: #1d497d"),
                       tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
                       tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
-                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
+                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d"),
+                      tags$span("8th Grade Algebra Scores", style = "color: #c0504d"),
+                      tags$span("3rd Grade ELA Scores", style = "color: #c0504d"),
+                      tags$span("Student Economic Disadvantage", style = "color: #c0504d")
+                      
                     ),
                     choiceValues = c(
                       "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support", "8th Grade Algebra Scores", "3rd Grade ELA Scores", "Student Economic Disadvantage"
                     )
                   )
                 )
@@ -1645,11 +1684,14 @@ platform for public reporting, equitable resource allocation, and data-driven de
                       tags$span("Attendance Growth Rate", style = "color: #1d497d"),
                       tags$span("CLASS Metric - Pre-K Classroom Organization", style = "color: #c0504d"),
                       tags$span("CLASS Metric - Pre-K Emotional Support", style = "color: #c0504d"),
-                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d")
+                      tags$span("CLASS Metric - Pre-K Instructional Support", style = "color: #c0504d"),
+                      tags$span("8th Grade Algebra Scores", style = "color: #c0504d"),
+                      tags$span("3rd Grade ELA Scores", style = "color: #c0504d"),
+                      tags$span("Student Economic Disadvantage", style = "color: #c0504d")
                     ),
                     choiceValues = c(
                       "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support"
+                      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support", "8th Grade Algebra Scores", "3rd Grade ELA Scores", "Student Economic Disadvantage"
                     )
                   )
                 )
@@ -2240,11 +2282,8 @@ platform for public reporting, equitable resource allocation, and data-driven de
     # 4.1.4.2 Indicator & Outcome Comparison Tab - Alternative UI
     
     # defining indicator variables
-    indicator_vars <- c(
-      "Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate",
-      "CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support",
-      "% of Students Chronically Absent by School"
-    )
+    indicator_vars <- unique(school_indicators$variable)
+    
     
     point_overlay_outcome_vars <- c(
       "2024 Air Quality Monitoring Sites", "Parks and Recreation Locations"
@@ -2261,7 +2300,8 @@ platform for public reporting, equitable resource allocation, and data-driven de
       }
       
       if (var %in% indicator_vars) {
-        d <- school_indicators |> filter(variable == var)
+        d <- school_indicators |> 
+          filter(variable == var)
         if (input$area_ind != "Citywide") {
           d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
         }
