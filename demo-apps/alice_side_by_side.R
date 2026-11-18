@@ -148,6 +148,10 @@ load <- function(new_data = FALSE) {
       st_crs(tracts)
     )
     
+  # 2.2.2.2 School Attendance Zones (elementary) ===
+    
+    attend_zones <- st_read(here::here("data-files", "elementary_school_attendance_zones"))
+    
   # 2.2.3 Getting ACS Data ====
     
     # Names of variables that your pulling
