@@ -1825,6 +1825,12 @@ platform for public reporting, equitable resource allocation, and data-driven de
         # residual plot
         textOutput("assumptions_text"),
         plotOutput("reg_assumptions", height = "400px")
+      ),
+      # 3.1.5 Mockup Scatterplot Tab ----
+      # just for making scatterplots, not for interpreting anything
+      tabPanel(
+        "Mockup Scatterplot Tab",
+        p("Pick two variables to see a scatterplot. Click a point to see where it is on the map.")
       )
     )
     )
