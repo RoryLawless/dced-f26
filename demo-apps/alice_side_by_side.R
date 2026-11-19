@@ -2677,6 +2677,32 @@ platform for public reporting, equitable resource allocation, and data-driven de
           label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
         )
     })
+
+    # school scatter
+    output$sc_school_plot <- plotly::renderPlotly({
+      d <- school_scatter |>
+        transmute(short_name,
+          x = .data[[input$sc_school_x]],
+          y = .data[[input$sc_school_y]]
+        ) |>
+        drop_na()
+      validate(need(nrow(d) > 0, "No schools have data for both of these."))
+
+      plotly::plot_ly(
+        d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        text = ~ paste0(
+          "School: ", short_name,
+          "<br>", input$sc_school_x, ": ", round(x, 2),
+          "<br>", input$sc_school_y, ": ", round(y, 2)
+        ),
+        hoverinfo = "text",
+        marker = list(color = "#8856a7", size = 9, opacity = 0.8)
+      ) |>
+        plotly::layout(
+          xaxis = list(title = input$sc_school_x),
+          yaxis = list(title = input$sc_school_y)
+        )
+    })
   }
 
     # 5.1 Run App ----
