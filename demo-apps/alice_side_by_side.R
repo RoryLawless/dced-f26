@@ -1859,6 +1859,17 @@ platform for public reporting, equitable resource allocation, and data-driven de
             width = 6,
             selectInput("sc_tract_y", "Y-Variable", choices = tract_scatter_vars, selected = "Median Household Income")
           )
+        ),
+        # scatter on left, map on right
+        fluidRow(
+          column(
+            width = 6,
+            plotly::plotlyOutput("sc_tract_plot", height = "450px")
+          ),
+          column(
+            width = 6,
+            leafletOutput("sc_tract_map", height = "450px")
+          )
         )
       )
     )
