@@ -2690,6 +2690,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
 
       plotly::plot_ly(
         d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        key = ~short_name, source = "sc_school",
         text = ~ paste0(
           "School: ", short_name,
           "<br>", input$sc_school_x, ": ", round(x, 2),
@@ -2701,7 +2702,8 @@ platform for public reporting, equitable resource allocation, and data-driven de
         plotly::layout(
           xaxis = list(title = input$sc_school_x),
           yaxis = list(title = input$sc_school_y)
-        )
+        ) |>
+        plotly::event_register("plotly_click")
     })
 
     # school map
@@ -2710,6 +2712,20 @@ platform for public reporting, equitable resource allocation, and data-driven de
         leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
         addCircleMarkers(
           radius = 5, color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.8,
+          label = ~ paste0(short_name, " | ", neighborhood, ", ", ward)
+        )
+    })
+
+    # school highlight
+    observeEvent(plotly::event_data("plotly_click", source = "sc_school"), {
+      clicked <- plotly::event_data("plotly_click", source = "sc_school")$key
+      sel <- school_points |> filter(short_name == clicked)
+
+      leafletProxy("sc_school_map") |>
+        clearGroup("selected") |>
+        addCircleMarkers(
+          data = sel, group = "selected",
+          radius = 8, color = "white", weight = 2, fillColor = "#be1e2e", fillOpacity = 1,
           label = ~ paste0(short_name, " | ", neighborhood, ", ", ward)
         )
     })
