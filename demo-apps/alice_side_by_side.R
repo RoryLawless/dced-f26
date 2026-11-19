@@ -2576,6 +2576,37 @@ platform for public reporting, equitable resource allocation, and data-driven de
       output$assumptions_text <- renderText({
         assumptions_text()
       })
+
+    # 4.1.7 Mockup Scatterplot Tab ----
+    # tract scatter
+    # all tracts
+    output$sc_tract_plot <- plotly::renderPlotly({
+      d <- data |>
+        st_drop_geometry() |>
+        filter(variable %in% c(input$sc_tract_x, input$sc_tract_y)) |>
+        select(tract = short_name, variable, estimate) |>
+        pivot_wider(names_from = variable, values_from = estimate, values_fn = mean) |>
+        transmute(tract,
+          x = .data[[input$sc_tract_x]],
+          y = .data[[input$sc_tract_y]]
+        ) |>
+        drop_na()
+
+      plotly::plot_ly(
+        d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        text = ~ paste0(
+          "Tract: ", sub("Census Tract ", "", tract),
+          "<br>", input$sc_tract_x, ": ", round(x, 2),
+          "<br>", input$sc_tract_y, ": ", round(y, 2)
+        ),
+        hoverinfo = "text",
+        marker = list(color = "#8856a7", size = 9, opacity = 0.8)
+      ) |>
+        plotly::layout(
+          xaxis = list(title = input$sc_tract_x),
+          yaxis = list(title = input$sc_tract_y)
+        )
+    })
   }
 
     # 5.1 Run App ----
