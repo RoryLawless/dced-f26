@@ -2703,6 +2703,16 @@ platform for public reporting, equitable resource allocation, and data-driven de
           yaxis = list(title = input$sc_school_y)
         )
     })
+
+    # school map
+    output$sc_school_map <- renderLeaflet({
+      leaflet(school_points) |>
+        leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
+        addCircleMarkers(
+          radius = 5, color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.8,
+          label = ~ paste0(short_name, " | ", neighborhood, ", ", ward)
+        )
+    })
   }
 
     # 5.1 Run App ----
