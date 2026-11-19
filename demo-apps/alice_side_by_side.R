@@ -1,4 +1,4 @@
-# I use this to load. shiny::runApp("demo-apps/alice_side_by_side.R")
+# I used to load. shiny::runApp("demo-apps/alice_side_by_side.R")
 
 # 1. Packages ----
 
@@ -1067,6 +1067,17 @@ load <- function(new_data = FALSE) {
     
   
   school_indicators <- rbind(school_indicators, school_geom_indicators)
+
+  # school scatter data
+  school_scatter <- school_indicators |>
+    st_drop_geometry() |>
+    select(short_name, variable, estimate) |>
+    pivot_wider(names_from = variable, values_from = estimate, values_fn = mean)
+
+  # school points
+  school_points <- school_indicators |>
+    select(short_name, neighborhood, ward) |>
+    distinct(short_name, .keep_all = TRUE)
   
   
 
@@ -1104,6 +1115,72 @@ load <- function(new_data = FALSE) {
   # this is for fixing the legend so the NA value part goes below the legend
   css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
   html_fix <- as.character(htmltools::tags$style(type = "text/css", css_fix))
+
+  # tract vars for the scatterplot tab dropdowns
+  tract_scatter_vars <- c(
+    "Child Development Centers Per Capita",
+    "Crimes Per Capita in 2025",
+    "Land Use Diversity Score (0-1)",
+    "Median Household Income",
+    "Parks Per Capita",
+    "Percent 311 Calls Made for Sidewalk Repair",
+    "Percent Buildings of Good Quality",
+    "Percent Foreign-Born",
+    "Percent Homes Built Since 1970",
+    "Percent Households With Broadband Internet",
+    "Percent Households With Work Commute Under 45 Mins",
+    "Percent Housing Units Affordable",
+    "Percent Positive Land Uses",
+    "Percent Sidewalks Within 30 Feet of Streetlight",
+    "Percent Street Area With Bike Lanes",
+    "Percent Tract Alleys and Parking Lots",
+    "Percent Tract Along Safe Route to School",
+    "Percent Tract With Tree Canopy",
+    "Percent Tract Within 1/4 Mile of Trail",
+    "Percent Tract Within 10-Minute Walk of Park",
+    "Percent Tract Within 15-Minute Walk of Banking Institution",
+    "Percent Tract Within 15-Minute Walk of Cash Checking Institution",
+    "Percent Tract Within 15-Minute Walk of Farmers Market",
+    "Percent Tract Within 15-Minute Walk of Fire Station",
+    "Percent Tract Within 15-Minute Walk of Grocery Store",
+    "Percent Tract Within 15-Minute Walk of Health Care Facility",
+    "Percent Tract Within 15-Minute Walk of Healthy Corner Store",
+    "Percent Tract Within 15-Minute Walk of Library",
+    "Percent Tract Within 15-Minute Walk of Liquor Store",
+    "Percent Tract Within 15-Minute Walk of Mental Health Provider",
+    "Percent Tract Within 15-Minute Walk of Metro Station",
+    "Percent Tract Within 15-Minute Walk of Police Department",
+    "Percent Tract Within 15-Minute Walk of Recreation Center",
+    "Percent Tract Within 15-Minute Walk of Wireless Hotspot",
+    "Percent Tract Within 15-Minute Walk to Modernized School",
+    "Percent Tract Within 15-Minute Walk to Playground",
+    "Percent Tract Within 15-Minute Walk to School",
+    "Percent Tract Within 2-Minute Walk of Bus Stop",
+    "Percent Tract Within 2-Minute Walk of School Crossing Guard",
+    "Percent Tract Within 2-Minute Walk of Vacant Lot",
+    "Percent Tract Within 2-Minute Walk of Vacant or Blighted House",
+    "Percent Tract Within 250 Feet of High Injury Network Corridor",
+    "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location",
+    "Percent Tract Within 5-Minute Walk of Restaurant",
+    "Percent Tract Within Floodplain",
+    "Percent Tract in Low Food Access Area",
+    "Percent White Only",
+    "Poverty Rate (%)",
+    "Transit Stops Per Capita"
+  )
+
+  # school vars
+  school_scatter_vars <- c(
+    "3rd Grade ELA Scores",
+    "8th Grade Algebra Scores",
+    "Attendance Growth Rate",
+    "CLASS Metric - Pre-K Classroom Organization",
+    "CLASS Metric - Pre-K Emotional Support",
+    "CLASS Metric - Pre-K Instructional Support",
+    "Chronic Absenteeism Rates by School",
+    "Pre-K Chronic Absenteeism Rate",
+    "Student Economic Disadvantage"
+  )
 
   # 2.4 Theming ----
     # theming! see the theming doc i created for more themeing options we could do
@@ -1825,6 +1902,57 @@ platform for public reporting, equitable resource allocation, and data-driven de
         # residual plot
         textOutput("assumptions_text"),
         plotOutput("reg_assumptions", height = "400px")
+      ),
+      # 3.1.5 Mockup Scatterplot Tab ----
+      # just for making scatterplots, not really for interpreting
+      tabPanel(
+        "Mockup Scatterplot Tab",
+        # section 1 - tract stuff
+        h4("Section 1: Tract-Level Data Scatterplots"),
+        fluidRow(
+          column(
+            width = 6,
+            selectInput("sc_tract_x", "X-Variable", choices = tract_scatter_vars, selected = "Poverty Rate (%)")
+          ),
+          column(
+            width = 6,
+            selectInput("sc_tract_y", "Y-Variable", choices = tract_scatter_vars, selected = "Median Household Income")
+          )
+        ),
+        # scatter on left, map on right
+        fluidRow(
+          column(
+            width = 6,
+            plotly::plotlyOutput("sc_tract_plot", height = "450px")
+          ),
+          column(
+            width = 6,
+            leafletOutput("sc_tract_map", height = "450px")
+          )
+        ),
+        # section 2 - schools
+        h4("Section 2: School-Level Scatterplots (Point Data)"),
+        fluidRow(
+          column(
+            width = 6,
+            selectInput("sc_school_x", "X-Variable", choices = school_scatter_vars, selected = "Student Economic Disadvantage")
+          ),
+          column(
+            width = 6,
+            selectInput("sc_school_y", "Y-Variable", choices = school_scatter_vars, selected = "Chronic Absenteeism Rates by School")
+          )
+        ),
+        # school scatter + map
+        fluidRow(
+          column(
+            width = 6,
+            plotly::plotlyOutput("sc_school_plot", height = "450px")
+          ),
+          column(
+            width = 6,
+            leafletOutput("sc_school_map", height = "450px")
+          )
+        )
       )
     )
     )
@@ -2162,7 +2290,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
       if (input$area_ind != "Citywide") {
         d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
       }
-      validate(need(nrow(d) > 0, "No schools with data for this variable in this area."))
+      req(nrow(d) > 0)
       d
     })
 
@@ -2530,6 +2658,119 @@ platform for public reporting, equitable resource allocation, and data-driven de
       output$assumptions_text <- renderText({
         assumptions_text()
       })
+
+    # 4.1.7 Mockup Scatterplot Tab ----
+    # tract scatter
+    # all tracts
+    output$sc_tract_plot <- plotly::renderPlotly({
+      d <- data |>
+        st_drop_geometry() |>
+        filter(variable %in% c(input$sc_tract_x, input$sc_tract_y)) |>
+        select(tract = short_name, variable, estimate) |>
+        pivot_wider(names_from = variable, values_from = estimate, values_fn = mean) |>
+        transmute(tract,
+          x = .data[[input$sc_tract_x]],
+          y = .data[[input$sc_tract_y]]
+        ) |>
+        drop_na()
+
+      plotly::plot_ly(
+        d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        key = ~tract, source = "sc_tract",
+        text = ~ paste0(
+          "Tract: ", sub("Census Tract ", "", tract),
+          "<br>", input$sc_tract_x, ": ", round(x, 2),
+          "<br>", input$sc_tract_y, ": ", round(y, 2)
+        ),
+        hoverinfo = "text",
+        marker = list(color = "#8856a7", size = 9, opacity = 0.8)
+      ) |>
+        plotly::layout(
+          xaxis = list(title = input$sc_tract_x),
+          yaxis = list(title = input$sc_tract_y)
+        ) |>
+        plotly::event_register("plotly_click")
+    })
+
+    # tract map
+    sc_tracts <- data |>
+      filter(variable == "Poverty Rate (%)") |>
+      select(tract = short_name, neighborhood, ward)
+
+    output$sc_tract_map <- renderLeaflet({
+      leaflet(sc_tracts) |>
+        leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
+        addPolygons(
+          color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.5,
+          label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
+        )
+    })
+
+    # click highlight
+    observeEvent(plotly::event_data("plotly_click", source = "sc_tract"), {
+      clicked <- plotly::event_data("plotly_click", source = "sc_tract")$key
+      sel <- sc_tracts |> filter(tract == clicked)
+
+      leafletProxy("sc_tract_map") |>
+        clearGroup("selected") |>
+        addPolygons(
+          data = sel, group = "selected",
+          color = "#be1e2e", weight = 3, fillColor = "#be1e2e", fillOpacity = 0.6,
+          label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
+        )
+    })
+
+    # school scatter
+    output$sc_school_plot <- plotly::renderPlotly({
+      d <- school_scatter |>
+        transmute(short_name,
+          x = .data[[input$sc_school_x]],
+          y = .data[[input$sc_school_y]]
+        ) |>
+        drop_na()
+      req(nrow(d) > 0)
+
+      plotly::plot_ly(
+        d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        key = ~short_name, source = "sc_school",
+        text = ~ paste0(
+          short_name,
+          "<br>", input$sc_school_x, ": ", round(x, 2),
+          "<br>", input$sc_school_y, ": ", round(y, 2)
+        ),
+        hoverinfo = "text",
+        marker = list(color = "#8856a7", size = 9, opacity = 0.8)
+      ) |>
+        plotly::layout(
+          xaxis = list(title = input$sc_school_x),
+          yaxis = list(title = input$sc_school_y)
+        ) |>
+        plotly::event_register("plotly_click")
+    })
+
+    # school map
+    output$sc_school_map <- renderLeaflet({
+      leaflet(school_points) |>
+        leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
+        addCircleMarkers(
+          radius = 5, color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.8,
+          label = ~ paste0(short_name, " | ", neighborhood, ", ", ward)
+        )
+    })
+
+    # school highlight
+    observeEvent(plotly::event_data("plotly_click", source = "sc_school"), {
+      clicked <- plotly::event_data("plotly_click", source = "sc_school")$key
+      sel <- school_points |> filter(short_name == clicked)
+
+      leafletProxy("sc_school_map") |>
+        clearGroup("selected") |>
+        addCircleMarkers(
+          data = sel, group = "selected",
+          radius = 8, color = "white", weight = 2, fillColor = "#be1e2e", fillOpacity = 1,
+          label = ~ paste0(short_name, " | ", neighborhood, ", ", ward)
+        )
+    })
   }
 
     # 5.1 Run App ----
