@@ -1133,6 +1133,12 @@ load <- function(new_data = FALSE) {
     "Built Environment: Climate Resilience" = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")
   )
 
+  # school vars
+  school_scatter_vars <- list(
+    "Attendance" = c("Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate"),
+    "Classroom Metrics" = c("CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support", "3rd Grade ELA Scores", "8th Grade Algebra Scores", "Student Economic Disadvantage")
+  )
+
   # 2.4 Theming ----
     # theming! see the theming doc i created for more themeing options we could do
     # https://docs.google.com/document/d/1OP1wcjPOscsBWhuMeGXRL6NeRck9Z2xCrjg9wSYaoVE/edit?usp=sharing
@@ -1880,6 +1886,18 @@ platform for public reporting, equitable resource allocation, and data-driven de
           column(
             width = 6,
             leafletOutput("sc_tract_map", height = "450px")
+          )
+        ),
+        # section 2 - schools
+        h4("Section 2: School-Level Scatterplots (Point Data)"),
+        fluidRow(
+          column(
+            width = 6,
+            selectInput("sc_school_x", "X-Variable", choices = school_scatter_vars, selected = "Student Economic Disadvantage")
+          ),
+          column(
+            width = 6,
+            selectInput("sc_school_y", "Y-Variable", choices = school_scatter_vars, selected = "Chronic Absenteeism Rates by School")
           )
         )
       )
