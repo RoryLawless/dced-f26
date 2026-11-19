@@ -1,4 +1,4 @@
-# I use this to load. shiny::runApp("demo-apps/alice_side_by_side.R")
+# I use to load. shiny::runApp("demo-apps/alice_side_by_side.R")
 
 # 1. Packages ----
 
@@ -1067,6 +1067,17 @@ load <- function(new_data = FALSE) {
     
   
   school_indicators <- rbind(school_indicators, school_geom_indicators)
+
+  # school scatter data
+  school_scatter <- school_indicators |>
+    st_drop_geometry() |>
+    select(short_name, variable, estimate) |>
+    pivot_wider(names_from = variable, values_from = estimate, values_fn = mean)
+
+  # school points
+  school_points <- school_indicators |>
+    select(short_name, neighborhood, ward) |>
+    distinct(short_name, .keep_all = TRUE)
   
   
 
