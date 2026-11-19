@@ -1899,6 +1899,17 @@ platform for public reporting, equitable resource allocation, and data-driven de
             width = 6,
             selectInput("sc_school_y", "Y-Variable", choices = school_scatter_vars, selected = "Chronic Absenteeism Rates by School")
           )
+        ),
+        # school scatter + map
+        fluidRow(
+          column(
+            width = 6,
+            plotly::plotlyOutput("sc_school_plot", height = "450px")
+          ),
+          column(
+            width = 6,
+            leafletOutput("sc_school_map", height = "450px")
+          )
         )
       )
     )
