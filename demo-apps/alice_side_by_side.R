@@ -2594,6 +2594,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
 
       plotly::plot_ly(
         d, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        key = ~tract, source = "sc_tract",
         text = ~ paste0(
           "Tract: ", sub("Census Tract ", "", tract),
           "<br>", input$sc_tract_x, ": ", round(x, 2),
@@ -2605,7 +2606,8 @@ platform for public reporting, equitable resource allocation, and data-driven de
         plotly::layout(
           xaxis = list(title = input$sc_tract_x),
           yaxis = list(title = input$sc_tract_y)
-        )
+        ) |>
+        plotly::event_register("plotly_click")
     })
 
     # tract map
@@ -2618,6 +2620,20 @@ platform for public reporting, equitable resource allocation, and data-driven de
         leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
         addPolygons(
           color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.5,
+          label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
+        )
+    })
+
+    # click highlight
+    observeEvent(plotly::event_data("plotly_click", source = "sc_tract"), {
+      clicked <- plotly::event_data("plotly_click", source = "sc_tract")$key
+      sel <- sc_tracts |> filter(tract == clicked)
+
+      leafletProxy("sc_tract_map") |>
+        clearGroup("selected") |>
+        addPolygons(
+          data = sel, group = "selected",
+          color = "#be1e2e", weight = 3, fillColor = "#be1e2e", fillOpacity = 0.6,
           label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
         )
     })
