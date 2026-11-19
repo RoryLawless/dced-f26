@@ -2607,6 +2607,20 @@ platform for public reporting, equitable resource allocation, and data-driven de
           yaxis = list(title = input$sc_tract_y)
         )
     })
+
+    # tract map
+    sc_tracts <- data |>
+      filter(variable == "Poverty Rate (%)") |>
+      select(tract = short_name, neighborhood, ward)
+
+    output$sc_tract_map <- renderLeaflet({
+      leaflet(sc_tracts) |>
+        leaflet::addProviderTiles("Stadia.StamenTonerLite") |>
+        addPolygons(
+          color = "white", weight = 1, fillColor = "grey", fillOpacity = 0.5,
+          label = ~ paste0("Tract: ", sub("Census Tract ", "", tract), " | ", neighborhood, ", ", ward)
+        )
+    })
   }
 
     # 5.1 Run App ----
