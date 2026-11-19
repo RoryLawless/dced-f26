@@ -1105,6 +1105,23 @@ load <- function(new_data = FALSE) {
   css_fix <- "div.info.legend.leaflet-control br {clear: both;}"
   html_fix <- as.character(htmltools::tags$style(type = "text/css", css_fix))
 
+  # tract vars for the scatterplot tab dropdowns
+  tract_scatter_vars <- list(
+    "Economic Opportunity & Housing Affordability" = c("Poverty Rate (%)", "Median Household Income"),
+    "Demographic Diversity" = c("Percent Foreign-Born", "Percent White Only"),
+    "Public Safety & Neighborhood Quality" = c("Land Use Diversity Score (0-1)", "Percent Positive Land Uses", "Parks Per Capita", "Crimes Per Capita in 2025"),
+    "Transportation & Recreational Access" = c("Child Development Centers Per Capita", "Transit Stops Per Capita"),
+    "Built Environment: Access to School" = c("Percent Tract Within 15-Minute Walk to School", "Percent Tract Within 15-Minute Walk to Modernized School", "Percent Tract Within 2-Minute Walk of School Crossing Guard", "Percent Tract Along Safe Route to School"),
+    "Built Environment: Parks & Recreation Access" = c("Percent Tract Within 15-Minute Walk to Playground", "Percent Tract Within 15-Minute Walk of Recreation Center", "Percent Tract Within 10-Minute Walk of Park", "Percent Tract Within 1/4 Mile of Trail"),
+    "Built Environment: Safety & Wellness" = c("Percent Tract Within 15-Minute Walk of Health Care Facility", "Percent Tract Within 15-Minute Walk of Mental Health Provider", "Percent Tract Within 15-Minute Walk of Police Department", "Percent Tract Within 15-Minute Walk of Fire Station", "Percent Tract Within 250 Feet of High Injury Network Corridor", "Percent Tract Within 15-Minute Walk of Liquor Store"),
+    "Built Environment: Access to Transit" = c("Percent Tract Within 2-Minute Walk of Bus Stop", "Percent Tract Within 15-Minute Walk of Metro Station", "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location", "Percent Street Area With Bike Lanes", "Percent Households With Work Commute Under 45 Mins"),
+    "Built Environment: Public Safety & Tract Infrastructure" = c("Percent Buildings of Good Quality", "Percent Homes Built Since 1970", "Percent 311 Calls Made for Sidewalk Repair", "Percent Tract Within 2-Minute Walk of Vacant or Blighted House", "Percent Tract Within 2-Minute Walk of Vacant Lot", "Percent Sidewalks Within 30 Feet of Streetlight", "Percent Tract Alleys and Parking Lots"),
+    "Built Environment: Digital Access & Educational Resources" = c("Percent Tract Within 15-Minute Walk of Library", "Percent Tract Within 15-Minute Walk of Wireless Hotspot", "Percent Households With Broadband Internet"),
+    "Built Environment: Economic & Financial Access" = c("Percent Tract Within 15-Minute Walk of Banking Institution", "Percent Tract Within 15-Minute Walk of Cash Checking Institution", "Percent Housing Units Affordable"),
+    "Built Environment: Food Access" = c("Percent Tract Within 15-Minute Walk of Farmers Market", "Percent Tract Within 5-Minute Walk of Restaurant", "Percent Tract Within 15-Minute Walk of Grocery Store", "Percent Tract in Low Food Access Area", "Percent Tract Within 15-Minute Walk of Healthy Corner Store"),
+    "Built Environment: Climate Resilience" = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")
+  )
+
   # 2.4 Theming ----
     # theming! see the theming doc i created for more themeing options we could do
     # https://docs.google.com/document/d/1OP1wcjPOscsBWhuMeGXRL6NeRck9Z2xCrjg9wSYaoVE/edit?usp=sharing
@@ -1827,10 +1844,22 @@ platform for public reporting, equitable resource allocation, and data-driven de
         plotOutput("reg_assumptions", height = "400px")
       ),
       # 3.1.5 Mockup Scatterplot Tab ----
-      # just for making scatterplots, not for interpreting anything
+      # just for making scatterplots, not really for interpreting
       tabPanel(
         "Mockup Scatterplot Tab",
-        p("Pick two variables to see a scatterplot. Click a point to see where it is on the map.")
+        p("Pick two variables to see a scatterplot. Click a point to see where it is on the map."),
+        # section 1 - tract stuff
+        h4("Section 1: Tract-Level Data Scatterplots"),
+        fluidRow(
+          column(
+            width = 6,
+            selectInput("sc_tract_x", "X-Variable", choices = tract_scatter_vars, selected = "Poverty Rate (%)")
+          ),
+          column(
+            width = 6,
+            selectInput("sc_tract_y", "Y-Variable", choices = tract_scatter_vars, selected = "Median Household Income")
+          )
+        )
       )
     )
     )
