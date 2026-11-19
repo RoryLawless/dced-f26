@@ -1117,26 +1117,69 @@ load <- function(new_data = FALSE) {
   html_fix <- as.character(htmltools::tags$style(type = "text/css", css_fix))
 
   # tract vars for the scatterplot tab dropdowns
-  tract_scatter_vars <- list(
-    "Economic Opportunity & Housing Affordability" = c("Poverty Rate (%)", "Median Household Income"),
-    "Demographic Diversity" = c("Percent Foreign-Born", "Percent White Only"),
-    "Public Safety & Neighborhood Quality" = c("Land Use Diversity Score (0-1)", "Percent Positive Land Uses", "Parks Per Capita", "Crimes Per Capita in 2025"),
-    "Transportation & Recreational Access" = c("Child Development Centers Per Capita", "Transit Stops Per Capita"),
-    "Built Environment: Access to School" = c("Percent Tract Within 15-Minute Walk to School", "Percent Tract Within 15-Minute Walk to Modernized School", "Percent Tract Within 2-Minute Walk of School Crossing Guard", "Percent Tract Along Safe Route to School"),
-    "Built Environment: Parks & Recreation Access" = c("Percent Tract Within 15-Minute Walk to Playground", "Percent Tract Within 15-Minute Walk of Recreation Center", "Percent Tract Within 10-Minute Walk of Park", "Percent Tract Within 1/4 Mile of Trail"),
-    "Built Environment: Safety & Wellness" = c("Percent Tract Within 15-Minute Walk of Health Care Facility", "Percent Tract Within 15-Minute Walk of Mental Health Provider", "Percent Tract Within 15-Minute Walk of Police Department", "Percent Tract Within 15-Minute Walk of Fire Station", "Percent Tract Within 250 Feet of High Injury Network Corridor", "Percent Tract Within 15-Minute Walk of Liquor Store"),
-    "Built Environment: Access to Transit" = c("Percent Tract Within 2-Minute Walk of Bus Stop", "Percent Tract Within 15-Minute Walk of Metro Station", "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location", "Percent Street Area With Bike Lanes", "Percent Households With Work Commute Under 45 Mins"),
-    "Built Environment: Public Safety & Tract Infrastructure" = c("Percent Buildings of Good Quality", "Percent Homes Built Since 1970", "Percent 311 Calls Made for Sidewalk Repair", "Percent Tract Within 2-Minute Walk of Vacant or Blighted House", "Percent Tract Within 2-Minute Walk of Vacant Lot", "Percent Sidewalks Within 30 Feet of Streetlight", "Percent Tract Alleys and Parking Lots"),
-    "Built Environment: Digital Access & Educational Resources" = c("Percent Tract Within 15-Minute Walk of Library", "Percent Tract Within 15-Minute Walk of Wireless Hotspot", "Percent Households With Broadband Internet"),
-    "Built Environment: Economic & Financial Access" = c("Percent Tract Within 15-Minute Walk of Banking Institution", "Percent Tract Within 15-Minute Walk of Cash Checking Institution", "Percent Housing Units Affordable"),
-    "Built Environment: Food Access" = c("Percent Tract Within 15-Minute Walk of Farmers Market", "Percent Tract Within 5-Minute Walk of Restaurant", "Percent Tract Within 15-Minute Walk of Grocery Store", "Percent Tract in Low Food Access Area", "Percent Tract Within 15-Minute Walk of Healthy Corner Store"),
-    "Built Environment: Climate Resilience" = c("Percent Tract With Tree Canopy", "Percent Tract Within Floodplain")
+  tract_scatter_vars <- c(
+    "Child Development Centers Per Capita",
+    "Crimes Per Capita in 2025",
+    "Land Use Diversity Score (0-1)",
+    "Median Household Income",
+    "Parks Per Capita",
+    "Percent 311 Calls Made for Sidewalk Repair",
+    "Percent Buildings of Good Quality",
+    "Percent Foreign-Born",
+    "Percent Homes Built Since 1970",
+    "Percent Households With Broadband Internet",
+    "Percent Households With Work Commute Under 45 Mins",
+    "Percent Housing Units Affordable",
+    "Percent Positive Land Uses",
+    "Percent Sidewalks Within 30 Feet of Streetlight",
+    "Percent Street Area With Bike Lanes",
+    "Percent Tract Alleys and Parking Lots",
+    "Percent Tract Along Safe Route to School",
+    "Percent Tract With Tree Canopy",
+    "Percent Tract Within 1/4 Mile of Trail",
+    "Percent Tract Within 10-Minute Walk of Park",
+    "Percent Tract Within 15-Minute Walk of Banking Institution",
+    "Percent Tract Within 15-Minute Walk of Cash Checking Institution",
+    "Percent Tract Within 15-Minute Walk of Farmers Market",
+    "Percent Tract Within 15-Minute Walk of Fire Station",
+    "Percent Tract Within 15-Minute Walk of Grocery Store",
+    "Percent Tract Within 15-Minute Walk of Health Care Facility",
+    "Percent Tract Within 15-Minute Walk of Healthy Corner Store",
+    "Percent Tract Within 15-Minute Walk of Library",
+    "Percent Tract Within 15-Minute Walk of Liquor Store",
+    "Percent Tract Within 15-Minute Walk of Mental Health Provider",
+    "Percent Tract Within 15-Minute Walk of Metro Station",
+    "Percent Tract Within 15-Minute Walk of Police Department",
+    "Percent Tract Within 15-Minute Walk of Recreation Center",
+    "Percent Tract Within 15-Minute Walk of Wireless Hotspot",
+    "Percent Tract Within 15-Minute Walk to Modernized School",
+    "Percent Tract Within 15-Minute Walk to Playground",
+    "Percent Tract Within 15-Minute Walk to School",
+    "Percent Tract Within 2-Minute Walk of Bus Stop",
+    "Percent Tract Within 2-Minute Walk of School Crossing Guard",
+    "Percent Tract Within 2-Minute Walk of Vacant Lot",
+    "Percent Tract Within 2-Minute Walk of Vacant or Blighted House",
+    "Percent Tract Within 250 Feet of High Injury Network Corridor",
+    "Percent Tract Within 5-Minute Walk of Capital Bikeshare Location",
+    "Percent Tract Within 5-Minute Walk of Restaurant",
+    "Percent Tract Within Floodplain",
+    "Percent Tract in Low Food Access Area",
+    "Percent White Only",
+    "Poverty Rate (%)",
+    "Transit Stops Per Capita"
   )
 
   # school vars
-  school_scatter_vars <- list(
-    "Attendance" = c("Chronic Absenteeism Rates by School", "Pre-K Chronic Absenteeism Rate", "Attendance Growth Rate"),
-    "Classroom Metrics" = c("CLASS Metric - Pre-K Classroom Organization", "CLASS Metric - Pre-K Emotional Support", "CLASS Metric - Pre-K Instructional Support", "3rd Grade ELA Scores", "8th Grade Algebra Scores", "Student Economic Disadvantage")
+  school_scatter_vars <- c(
+    "3rd Grade ELA Scores",
+    "8th Grade Algebra Scores",
+    "Attendance Growth Rate",
+    "CLASS Metric - Pre-K Classroom Organization",
+    "CLASS Metric - Pre-K Emotional Support",
+    "CLASS Metric - Pre-K Instructional Support",
+    "Chronic Absenteeism Rates by School",
+    "Pre-K Chronic Absenteeism Rate",
+    "Student Economic Disadvantage"
   )
 
   # 2.4 Theming ----
@@ -1864,7 +1907,6 @@ platform for public reporting, equitable resource allocation, and data-driven de
       # just for making scatterplots, not really for interpreting
       tabPanel(
         "Mockup Scatterplot Tab",
-        p("Pick two variables to see a scatterplot. Click a point to see where it is on the map."),
         # section 1 - tract stuff
         h4("Section 1: Tract-Level Data Scatterplots"),
         fluidRow(
@@ -2248,7 +2290,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
       if (input$area_ind != "Citywide") {
         d <- d |> filter(neighborhood == input$area_ind | ward == input$area_ind)
       }
-      validate(need(nrow(d) > 0, "No schools with data for this variable in this area."))
+      req(nrow(d) > 0)
       d
     })
 
@@ -2686,13 +2728,13 @@ platform for public reporting, equitable resource allocation, and data-driven de
           y = .data[[input$sc_school_y]]
         ) |>
         drop_na()
-      validate(need(nrow(d) > 0, "No schools have data for both of these."))
+      req(nrow(d) > 0)
 
       plotly::plot_ly(
         d, x = ~x, y = ~y, type = "scatter", mode = "markers",
         key = ~short_name, source = "sc_school",
         text = ~ paste0(
-          "School: ", short_name,
+          short_name,
           "<br>", input$sc_school_x, ": ", round(x, 2),
           "<br>", input$sc_school_y, ": ", round(y, 2)
         ),
