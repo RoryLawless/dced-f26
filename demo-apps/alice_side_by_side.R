@@ -1116,50 +1116,50 @@ platform for public reporting, equitable resource allocation, and data-driven de
         fluidRow(
           column(
             width = 6,
-            tags$h3("Outcome Variables"),
+            tags$h3("Tract-Level Data:"),
             wellPanel(
               style = "border-width: 2px; border-color: black; background-color: white",
-              tags$b("TRACT-LEVEL DATA:"),
+              tags$b("American Community Survey & Open Data D.C."),
               tags$p(""),
               wellPanel(
-                style = "border-width: 3px; border-color: #0a3308; background-color: white",
-                tags$b("Economic Opportunity & Housing Affordability"),
-                tags$ul(
-                  tags$li("Poverty Rate (%)"),
-                  tags$li("Median Household Income"),
-                  tags$li("Median Rent"),
-                  tags$li("Affordable Housing Units Constructed Since 2015 Per Capita")
-                )
-              ),
-              wellPanel(
                 style = "border-width: 3px; border-color: #194d4d; background-color: white",
-                tags$b("Demographic Diversity"),
+                tags$b("Open Data DC"),
                 tags$ul(
-                  tags$li("Percent Foreign-Born"),
-                  tags$li("Percent White Only")
-                )
-              ),
-              wellPanel(
-                style = "border-width: 3px; border-color: #c0504d; background-color: white",
-                tags$b("Public Safety & Neighborhood Quality"),
-                tags$ul(
+                  tags$li("Affordable Housing Units Constructed Since 2015 Per Capita"),
                   tags$li("Land Use Diversity Score (0-1)"),
                   tags$li("Percent Positive Land Uses"),
                   tags$li("Parks Per Capita"),
-                  tags$li("Crimes Per Capita in 2025")
+                  tags$li("Child Development Centers Per Capita"),
+                  tags$li("Crimes Per Capita in 2025"),
+                  tags$li("Transit Stops Per Capita"),
+          
                 )
               ),
               wellPanel(
-                style = "border-width: 3px; border-color: #1d497d; background-color: white",
-                tags$b("Transportation & Recreational Access"),
+                style = "border-width: 3px; border-color: #0a3308; background-color: white",
+                tags$b("American Community Survey (ACS)"),
                 tags$ul(
-                  tags$li("Child Development Centers Per Capita"),
-                  tags$li("Transit Stops Per Capita")
+                  tags$li("Percent Foreign-Born"),
+                  tags$li("Percent White Only"),
+                  tags$li("Poverty Rate (%)"),
+                  tags$li("Median Household Income"),
+                  tags$li("Median Rent"),
+                  tags$li("Nursery School and Preschool Enrollment"),
+                  tags$li("Kindergarten Enrollment"),
+                  tags$li("Four-Year Graduation Rate"),
+                  tags$li("Five-Year Graduation Rate"),
+                  tags$li("6-Month Postsecondary Enrollment"),
+                  tags$li("12-Month Postsecondary Enrollment"),
+                  tags$li("Employment Rate Age 20-24"),
+                  tags$li("Employment Rate Age 25-29"),
+                  tags$li("High School Graduation Percentage"),
+                  tags$li("Bachelor's or Higher Percentage")
+                  
                 )
               ),
               wellPanel(
                 style = "border-width: 3px; border-color: #401155; background-color: white",
-                tags$b("Built Environment Indicators"),
+                tags$b("Built Environment Indicators (ACS)"),
                 tags$p(""),
                 tags$i("Access to School"),
                 tags$ul(
@@ -1229,69 +1229,18 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 )
               )
             ),
-            wellPanel(
-              style = "border-width: 2px; border-color: black; background-color: white",
-              tags$b("POINT AND POLYGON DATA:"),
-              tags$p(""),
-              tags$ul(
-                tags$li("% of Students Chronically Absent by School"),
-                tags$li("2024 Air Quality Monitoring Sites"),
-                tags$li("Parks and Recreation Locations")
-              )
-            ),
-            wellPanel(
-              style = "border-width: 2px; border-color: black; background-color: white",
-              tags$b("BLOCK-LEVEL DATA:"),
-              tags$p(""),
-              tags$ul(
-                tags$li("Total Population"),
-                tags$li("Percent White Alone"),
-                tags$li("Percent Black Alone"),
-                tags$li("Percent Asian Alone"),
-                tags$li("Percent Renter Occupied"),
-                tags$li("Percent Owner Occupied")
-              )
-            )
+        
           ),
           column(
             width = 6,
-            tags$h3("Indicator Variables"),
+            tags$h3("Point Data"),
             wellPanel(
               style = "border-width: 2px; border-color: black; background-color: white",
-              tags$b("TRACT-LEVEL DATA:"),
-              tags$p(""),
-              wellPanel(
-                style = "border-width: 3px; border-color: #0a3308; background-color: white",
-                tags$b("Enrollment"),
-                tags$ul(
-                  tags$li("Nursery School and Preschool Enrollment"),
-                  tags$li("Kindergarten Enrollment")
-                )
-              ),
-              wellPanel(
-                style = "border-width: 3px; border-color: #194d4d; background-color: white",
-                tags$b("Level of Educational Attainment"),
-                tags$ul(
-                  tags$li("High School Graduation Percentage"),
-                  tags$li("Bachelor's or higher Percentage")
-                )
-              ),
-              wellPanel(
-                style = "border-width: 3px; border-color: #c0504d; background-color: white",
-                tags$b("Employment"),
-                tags$ul(
-                  tags$li("Employment Rate Age 20-24"),
-                  tags$li("Employment Rate Age 25-29")
-                )
-              )
-            ),
-            wellPanel(
-              style = "border-width: 2px; border-color: black; background-color: white",
-              tags$b("POINT DATA (BY DC SCHOOL):"),
+              tags$b("Open Data D.C.:"),
               tags$p(""),
               wellPanel(
                 style = "border-width: 3px; border-color: #1d497d; background-color: white",
-                tags$b("Attendance"),
+                tags$b("Attendance (D.C. School Level):"),
                 tags$ul(
                   tags$li("Chronic Absenteeism Rate"),
                   tags$li("Pre-K Chronic Absenteeism Rate"),
@@ -1299,8 +1248,8 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 )
               ),
               wellPanel(
-                style = "border-width: 3px; border-color: #1d497d; background-color: white",
-                tags$b("Classroom Metrics"),
+                style = "border-width: 2px; border-color: #1d497d; background-color: white",
+                tags$b("Classroom Metrics (D.C. School Level):"),
                 tags$ul(
                   tags$li("CLASS Framework - Pre-K Classroom Organization"),
                   tags$li("CLASS Framework - Pre-K Emotional Support"),
@@ -1309,22 +1258,36 @@ platform for public reporting, equitable resource allocation, and data-driven de
                   tags$li("8th Grade Math Scores"),
                   tags$li("School Level Economic Disadvantage")
                 )
-                
-              ),
-              wellPanel(
-                style = "border-width: 3px; border-color: #401155; background-color: white",
-                tags$b("Graduation and College Enrollment"),
-                tags$ul(
-                  tags$li("Four-Year Graduation Rate"),
-                  tags$li("Five-Year Graduation Rate"),
-                  tags$li("6-Month Postsecondary Enrollment"),
-                  tags$li("12-Month Postsecondary Enrollment")
+                ),
+                wellPanel(
+                  style = "border-width: 2px; border-color: black; background-color: white",
+                  tags$b("Point and Polygon Data:"),
+                  tags$p(""),
+                  tags$ul(
+                    tags$li("% of Students Chronically Absent by School"),
+                    tags$li("2024 Air Quality Monitoring Sites"),
+                    tags$li("Parks and Recreation Locations")
+                  )
+                )
+                ),
+                tags$b("Block Level Data"),
+                wellPanel(
+                  style = "border-width: 2px; border-color: black; background-color: white",
+                  tags$b("2020 Census Data:"),
+                  tags$p(""),
+                  tags$ul(
+                    tags$li("Total Population"),
+                    tags$li("Percent White Alone"),
+                    tags$li("Percent Black Alone"),
+                    tags$li("Percent Asian Alone"),
+                    tags$li("Percent Renter Occupied"),
+                    tags$li("Percent Owner Occupied")
+                  )
                 )
               )
-            )
-          )
         )
-      ),
+          ),
+      
       # 3.1.2 Side by Side Maps and Comparison Statistics ----
       tabPanel(
         "Compare Maps and Visualizations",
@@ -1517,7 +1480,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 width = 6,
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
-                  tags$h4("Indicator Variables"),
+                  tags$h4("School Level Data"),
                   radioButtons(
                     inputId = "var_left",
                     label = "",
@@ -1541,7 +1504,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 width = 6,
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
-                  tags$h4("Outcome Variables"),
+                  tags$h4("Tract-Level Data"),
                   navset_bar(
                     nav_menu(
                       title = tags$b("Economic Opportunity & Housing Affordability", style = "color: #0a3308"),
@@ -1818,8 +1781,9 @@ platform for public reporting, equitable resource allocation, and data-driven de
         plotOutput("reg_assumptions", height = "400px")
       )
     )
-  )
-
+    )
+  
+  
   # reactive function, will continue changes
   # since its reactive, will call back
   # runs filter function, updates dataset
