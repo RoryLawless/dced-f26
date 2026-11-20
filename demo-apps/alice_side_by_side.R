@@ -1718,7 +1718,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 width = 6,
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
-                  tags$h4("Indicator Variables"),
+                  tags$h4("School Level Data"),
                   radioButtons(
                     inputId = "var_right",
                     label = "",
@@ -1745,7 +1745,7 @@ platform for public reporting, equitable resource allocation, and data-driven de
                 width = 6,
                 wellPanel(
                   style = "border-width: 3px; border-color: black; background-color: white",
-                  tags$h4("Outcome Variables"),
+                  tags$h4("Tract Level Data"),
                   navset_bar(
                     nav_menu(
                       title = tags$b("Economic Opportunity & Housing Affordability", style = "color: #0a3308"),
